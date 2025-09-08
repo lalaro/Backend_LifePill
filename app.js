@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = require('./src/routes/userRoutes');
 const mealRoutes = require('./src/routes/mealRoutes');
+const userProfileRoutes = require('./src/routes/userProfileRoutes');
 const bodyParser = require('body-parser');
 
 const app = express();
@@ -18,6 +19,7 @@ app.use('/users', userRoutes);
 
 app.use('/meals', mealRoutes);
 
+app.use('/userProfiles', userProfileRoutes);
 app.listen(8085, ()    => {
     console.log('Server is running on port 8085');
 }); 
