@@ -12,6 +12,7 @@
  */
 class Meal {
     constructor(id, name, description, calories, proteins, carbohydrates, fats, ingredients, preparationTime) {
+        this.id = id;
         this.name = name;
         this.description = description;
         this.calories = calories;
