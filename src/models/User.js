@@ -1,23 +1,49 @@
-/**
- * User Model
- * Represents a user in the health tracking application.
- * @param {string} id - Unique identifier for the user.
- * @param {string} name - Name of the user.
- * @param {string} email - Email address of the user.
- * @param {string} passwordHash - Hashed password for authentication.
- * @param {string} role - Role of the user (e.g., "user", "admin").
- */
-class User {
-  constructor(id, name, email, passwordHash, role = "user") {
-    this.id = id;
-    this.name = name;
-    this.email = email;
-    this.passwordHash = passwordHash;
-    this.role = role;
-    this.profile = null;
-    this.healthStats = [];
-    this.notifications = [];
-  }
-}
+const mongoose = require("mongoose");
+const bcrypt = require("bcrypt");
 
-module.exports = User;
+const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+    lowercase: true,
+    trim: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  // Campos necesarios para recuperación de contraseña
+  resetPasswordToken: {
+    type: String,
+  },
+  resetPasswordExpires: {
+    type: Date,
+  }
+}, { timestamps: true });
+
+// Middleware: hashear password antes de guardar
+userSchema.pre("save", async function(next) {
+  if (!this.isModified("password")) {
+    return next();
+  }
+  try {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+    next();
+  } catch (err) {
+    next(err);
+  }
+});
+
+// Método para comparar password
+userSchema.methods.comparePassword = async function(plainPassword) {
+  return await bcrypt.compare(plainPassword, this.password);
+};
+
+module.exports = mongoose.model("User", userSchema);
