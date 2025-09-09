@@ -7,7 +7,10 @@ const userSchema = new mongoose.Schema({
   role: { type: String, default: "user" },          
   profile: { type: Object, default: null },         
   healthStats: { type: [Object], default: [] },     
-  notifications: { type: [Object], default: [] }    
+  notifications: { type: [Object], default: [] },
+  resetPasswordCode: { type: String },
+  resetPasswordExpires: { type: Date }
+  
 }, { timestamps: true });
 
 const User = mongoose.model("User", userSchema);
