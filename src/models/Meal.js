@@ -1,28 +1,17 @@
-/**
- * Meal model
- * @param {number} id - Unique identifier for the meal
- * @param {string} name - Name of the meal
- * @param {string} description - Description of the meal
- * @param {number} calories - Caloric content of the meal
- * @param {number} proteins - Protein content of the meal
- * @param {number} carbohydrates - Carbohydrate content of the meal
- * @param {number} fats - Fat content of the meal
- * @param {string[]} ingredients - List of ingredients in the meal
- * @param {number} preparationTime - Preparation time in minutes
- */
-class Meal {
-    constructor(id, name, description, calories, proteins, carbohydrates, fats, ingredients, preparationTime) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.calories = calories;
-        this.proteins = proteins;
-        this.carbohydrates = carbohydrates;
-        this.fats = fats;
-        this.ingredients = ingredients;
-        this.preparationTime = preparationTime;
-    }
 
-}
+const mongoose = require("mongoose");
+
+const mealSchema = new mongoose.Schema({
+  name: { type: String, required: true }, 
+  description: { type: String, default: "" },
+  calories: { type: Number, required: true },
+  proteins: { type: Number, required: true },
+  carbohydrates: { type: Number, required: true },
+  fats: { type: Number, required: true },
+  ingredients: { type: [String], default: [] },
+  preparationTime: { type: Number, required: true }
+}, { timestamps: true });
+
+const Meal = mongoose.model("Meal", mealSchema);
 
 module.exports = Meal;
