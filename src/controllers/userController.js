@@ -1,3 +1,4 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
 
 // Obtener todos los usuarios
@@ -24,8 +25,18 @@ const getUsersById = async (req, res) => {
 // Crear usuario
 const createUser = async (req, res) => {
   try {
-    const newUser = new User(req.body);
+    const { name, email, password } = req.body;
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      name,
+      email,
+      passwordHash
+    });
+
     await newUser.save();
+
     res.status(201).json(newUser);
   } catch (err) {
     res.status(400).json({ error: err.message });
