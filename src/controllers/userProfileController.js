@@ -1,64 +1,63 @@
 
-const UserProfile = require("../models/UserProfile");
+const userProfileRepository = require("../repositories/userProfileRepository");
 
-const getUserProfiles = async (req, res) => {
+
+exports.getProfiles = async (req, res) => {
   try {
-    const profiles = await UserProfile.find();
+    const profiles = await userProfileRepository.listar();
     res.json(profiles);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const getUserProfileById = async (req, res) => {
+exports.getProfileById = async (req, res) => {
   try {
-    const profile = await UserProfile.findById(req.params.id);
-    if (!profile) return res.status(404).send("Profile not found");
+    const profile = await userProfileRepository.obtenerPorId(req.params.id);
+    if (!profile) return res.status(404).json({ message: "Profile not found" });
     res.json(profile);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const createUserProfile = async (req, res) => {
+
+exports.getProfileByUserId = async (req, res) => {
   try {
-    const newProfile = new UserProfile(req.body);
-    await newProfile.save();
+    const profile = await userProfileRepository.obtenerPorUsuario(req.params.userId);
+    if (!profile) return res.status(404).json({ message: "Profile not found" });
+    res.json(profile);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+exports.createProfile = async (req, res) => {
+  try {
+    const newProfile = await userProfileRepository.crear(req.body);
     res.status(201).json(newProfile);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-const updateUserProfile = async (req, res) => {
+exports.updateProfile = async (req, res) => {
   try {
-    const updatedProfile = await UserProfile.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
-    if (!updatedProfile) return res.status(404).json({ message: "Profile not found" });
-    res.json(updatedProfile);
+    const updated = await userProfileRepository.actualizar(req.params.id, req.body);
+    if (!updated) return res.status(404).json({ message: "Profile not found" });
+    res.json(updated);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// Eliminar perfil
-const deleteUserProfile = async (req, res) => {
+exports.deleteProfile = async (req, res) => {
   try {
-    const deleted = await UserProfile.findByIdAndDelete(req.params.id);
+    const deleted = await userProfileRepository.eliminar(req.params.id);
     if (!deleted) return res.status(404).json({ message: "Profile not found" });
     res.json(deleted);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
-};
-
-module.exports = { 
-  getUserProfiles, 
-  getUserProfileById, 
-  createUserProfile, 
-  updateUserProfile, 
-  deleteUserProfile 
 };
