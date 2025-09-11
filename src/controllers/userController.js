@@ -1,4 +1,6 @@
+const bcrypt = require("bcrypt");
 const User = require("../models/User");
+const UserProfile = require("../models/UserProfile");
 
 // Obtener todos los usuarios
 const getUsers = async (req, res) => {
@@ -58,4 +60,56 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUsers, getUsersById, createUser, updateUser, deleteUser };
+
+const userRegister = async (req, res) => {
+  const session = await User.startSession();
+  session.startTransaction();
+  try {
+    const {
+      name,
+      birthDate,
+      phoneNumber,
+      email,
+      password,
+      weight,
+      height
+    } = req.body;
+
+    if(!name || !email || !password) {
+      return res.status(400).json({ error: "Name, email and password are required." });
+    }
+
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const newUser = new User({
+      name,
+      email,
+      passwordHash,
+      role: "user",
+      phoneNumber: phoneNumber ?? null,
+    });
+
+    const newProfile = new UserProfile({
+      userid: newUser._id,
+      birthdate: birthDate ? new Date(birthDate) : null,
+      height: height ?? 0,
+      weight: weight ?? 0
+    });
+    await newProfile.save({ session });
+
+    newUser.profile = newProfile.toObject();
+    await newUser.save({ session });
+
+    await session.commitTransaction();
+    session.endSession();
+
+    res.status(201).json({ user: newUser, profile: newProfile });
+  } catch (err) {
+    await session.abortTransaction();
+    session.endSession();
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports = { getUsers, getUsersById, createUser, updateUser, deleteUser, userRegister };
