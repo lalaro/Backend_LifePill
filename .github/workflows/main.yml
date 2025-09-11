@@ -3,10 +3,10 @@ name: CI - Backend_LifePill
 on:
   push:
     branches:
-      - feature/ci-pipeline
+      - Develop
   pull_request:
     branches:
-      - feature/ci-pipeline
+      - Develop
 
 jobs:
   ci:
