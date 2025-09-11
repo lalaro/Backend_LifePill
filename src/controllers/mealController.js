@@ -1,44 +1,37 @@
+ const mealRepository = require("../repositories/mealRepository");
 
-const Meal = require("../models/Meal");
-
-
-const getMeals = async (req, res) => {
+exports.getMeals = async (req, res) => {
   try {
-    const meals = await Meal.find();
+    const meals = await mealRepository.listar();
     res.json(meals);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-
-const getMealById = async (req, res) => {
+exports.getMealById = async (req, res) => {
   try {
-    const meal = await Meal.findById(req.params.id);
-    if (!meal) return res.status(404).send("Meal not found");
+    const meal = await mealRepository.obtenerPorId(req.params.id);
+    if (!meal) return res.status(404).json({ message: "Meal not found" });
     res.json(meal);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-const createMeal = async (req, res) => {
+
+exports.createMeal = async (req, res) => {
   try {
-    const newMeal = new Meal(req.body);
-    await newMeal.save();
+    const newMeal = await mealRepository.crear(req.body);
     res.status(201).json(newMeal);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-const updateMeal = async (req, res) => {
+exports.updateMeal = async (req, res) => {
   try {
-    const updatedMeal = await Meal.findByIdAndUpdate(
-      req.params.id,
-      req.body,
-      { new: true }
-    );
+    const updatedMeal = await mealRepository.actualizar(req.params.id, req.body);
     if (!updatedMeal) return res.status(404).json({ message: "Meal not found" });
     res.json(updatedMeal);
   } catch (err) {
@@ -46,14 +39,12 @@ const updateMeal = async (req, res) => {
   }
 };
 
-const deleteMeal = async (req, res) => {
+exports.deleteMeal = async (req, res) => {
   try {
-    const deleted = await Meal.findByIdAndDelete(req.params.id);
-    if (!deleted) return res.status(404).json({ message: "Meal not found" });
-    res.json(deleted);
+    const deletedMeal = await mealRepository.eliminar(req.params.id);
+    if (!deletedMeal) return res.status(404).json({ message: "Meal not found" });
+    res.json(deletedMeal);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
-module.exports = { getMeals, getMealById, createMeal, updateMeal, deleteMeal };
