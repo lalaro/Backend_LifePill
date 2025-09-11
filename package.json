@@ -18,6 +18,11 @@
     "url": "https://github.com/lalaro/Backend_LifePill/issues"
   },
   "homepage": "https://github.com/lalaro/Backend_LifePill#readme",
+
+  "engines": {
+    "node": ">=18.0.0 <21.0.0"
+  },
+
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^17.2.2",
