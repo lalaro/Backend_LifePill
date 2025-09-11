@@ -1,6 +1,7 @@
 const express = require('express');
 const userRoutes = require('./src/routes/userRoutes');
 const mealRoutes = require('./src/routes/mealRoutes');
+const userProfileRoutes = require('./src/routes/userProfileRoutes');
 const notificationRoutes = require('./src/routes/notificationRoutes');
 const mongoose = require('mongoose');
 const cors = require('cors'); 
@@ -26,8 +27,8 @@ mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log("✅ Conectado a MongoDB Atlas"))
   .catch(err => console.error("❌ Error conectando a MongoDB:", err));
 
-
 app.use('/users', userRoutes);
+app.use('/profiles', userProfileRoutes);
 app.use('/meals', mealRoutes);
 app.use('/notifications', notificationRoutes);
 
