@@ -31,17 +31,18 @@ Backend_LifePill es una API RESTful desarrollada en Node.js y Express, orientada
    ```sh
    npm install
    ```
-
-3. **Configura las variables de entorno:**
+3. **Instala las dependencias de desarrollo para pruebas:**
+   ```sh
+   npm install --save-dev jest supertest @shelf/jest-mongodb mongodb-memory-server
+   ```
+4. **Configura las variables de entorno:**
    - Crea un archivo `.env` en la raíz del proyecto.
-   - Ejemplo de configuración:
      ```
      PORT=8085
-     DB_URI=mongodb://localhost:27017/lifepill
-     JWT_SECRET=tu_clave_secreta
+     DB_URI=mongodb+srv://juanestebancancelado63_db_user:bWG9cTOetjzTVdcu@lifepill0.fowp8ns.mongodb.net/lifepill?
      ```
 
-4. **Inicia el servidor:**
+5. **Inicia el servidor:**
    ```sh
    npm run start
    ```
@@ -49,8 +50,11 @@ Backend_LifePill es una API RESTful desarrollada en Node.js y Express, orientada
      ```sh
      npm run dev
      ```
-
-5. **Accede a las rutas principales:**
+6. **Ejecuta las pruebas:**
+   ```sh
+   npm test
+   ```
+7. **Accede a las rutas principales:**
    - [http://localhost:8085](http://localhost:8085)
    - [http://localhost:8085/lifepill](http://localhost:8085/lifepill)
 
@@ -60,20 +64,24 @@ Backend_LifePill es una API RESTful desarrollada en Node.js y Express, orientada
 Backend_LifePill/
 │
 ├── src/
-│   ├── controllers/
-│   ├── models/
-│   ├── routes/
-│   ├── middlewares/
-│   └── app.js
+│   ├── controllers/      # Controladores con lógica de negocio
+│   ├── models/           # Modelos de datos (MongoDB)
+│   ├── routes/           # Definición de rutas y endpoints
+│   ├── middlewares/      # Validaciones y middlewares de seguridad
+│   └── app.js            # Configuración principal de la app
+│
+├── tests/                # Pruebas unitarias e integración
 ├── .env
 ├── package.json
 └── README.md
+
 ```
 
 ## Scripts útiles
 
 - `npm run start` — Inicia el servidor en modo producción.
 - `npm run dev` — Inicia el servidor en modo desarrollo con recarga automática (requiere nodemon).
+- `npm test` — Ejecuta las pruebas con jest y supertest.
 
 ## Enlace a la planeación
 
