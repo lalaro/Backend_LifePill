@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  app:
+    build: .
+    container_name: lifepill-backend
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      - MONGODB_URI=${MONGODB_URI}
+      - JWT_SECRET=${JWT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - PORT=3000
+    depends_on:
+      - mongo
+    restart: unless-stopped
+    networks:
+      - lifepill-network
+
+  mongo:
+    image: mongo:6
+    container_name: lifepill-mongo
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USERNAME:-admin}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASSWORD:-password}
+    volumes:
+      - mongo-data:/data/db
+    restart: unless-stopped
+    networks:
+      - lifepill-network
+
+volumes:
+  mongo-data:
+
+networks:
+  lifepill-network:
+    driver: bridge
