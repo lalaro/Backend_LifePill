@@ -9,6 +9,10 @@ class UserRepository {
     return User.findById(id);
   }
 
+  async obtenerPorEmail(email) {
+    return User.findOne({ email });
+  }
+
   async crear(data) {
     const user = new User(data);
     return user.save();

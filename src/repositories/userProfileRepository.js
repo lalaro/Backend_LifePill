@@ -13,6 +13,10 @@ class UserProfileRepository {
     return UserProfile.findOne({ userid: userId });
   }
 
+  async obtenerPorEmail(email) {
+    return User.findOne({ email });
+  }
+  
   async crear(data) {
     const profile = new UserProfile(data);
     return profile.save();
