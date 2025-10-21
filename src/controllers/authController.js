@@ -1,13 +1,18 @@
-// src/controllers/authController.js
 const { OAuth2Client } = require("google-auth-library");
 const userRepository = require("../repositories/userRepository");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
+// === GOOGLE LOGIN ===
 exports.googleAuth = async (req, res) => {
   try {
     const { idToken } = req.body;
+
+    if (!idToken) {
+      return res.status(400).json({ message: "Token de Google requerido" });
+    }
 
     const ticket = await client.verifyIdToken({
       idToken,
@@ -17,23 +22,94 @@ exports.googleAuth = async (req, res) => {
     const payload = ticket.getPayload();
     const { name, email, picture } = payload;
 
+    // Buscar o crear usuario
     let user = await userRepository.obtenerPorEmail(email);
     if (!user) {
       user = await userRepository.crear({
         name,
         email,
         picture,
-        provider: "google"
+        provider: "google",
+        passwordHash: null // No necesita password
       });
+    }
+
+    // Crear token JWT
+    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    res.json({ message: "Autenticación con Google exitosa", token, user });
+  } catch (error) {
+    console.error("Error en googleAuth:", error);
+    res.status(400).json({ message: "Token inválido o expirado", error: error.message });
+  }
+};
+
+// === REGISTRO NORMAL ===
+exports.register = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Nombre, email y contraseña son requeridos" });
+    }
+
+    const existingUser = await userRepository.obtenerPorEmail(email);
+    if (existingUser) {
+      return res.status(400).json({ message: "El usuario ya existe" });
+    }
+
+    const passwordHash = await bcrypt.hash(password, 10);
+
+    const newUser = await userRepository.crear({
+      name,
+      email,
+      passwordHash,
+      provider: "local"
+    });
+
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
+      expiresIn: process.env.JWT_EXPIRES_IN,
+    });
+
+    res.json({ message: "Registro exitoso", token, user: newUser });
+  } catch (error) {
+    console.error("Error en register:", error);
+    res.status(500).json({ message: "Error al registrar usuario", error: error.message });
+  }
+};
+
+// === LOGIN NORMAL ===
+exports.login = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({ message: "Email y contraseña son requeridos" });
+    }
+
+    const user = await userRepository.obtenerPorEmail(email);
+    if (!user) {
+      return res.status(400).json({ message: "Usuario no encontrado" });
+    }
+
+    if (user.provider === "google") {
+      return res.status(400).json({ message: "Este usuario debe iniciar sesión con Google" });
+    }
+
+    const validPassword = await bcrypt.compare(password, user.passwordHash);
+    if (!validPassword) {
+      return res.status(400).json({ message: "Contraseña incorrecta" });
     }
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
-    res.json({ message: "Autenticación exitosa", token, user });
+    res.json({ message: "Login exitoso", token, user });
   } catch (error) {
-    console.error(error);
-    res.status(400).json({ message: "Token inválido o expirado", error: error.message });
+    console.error("Error en login:", error);
+    res.status(500).json({ message: "Error en el login", error: error.message });
   }
 };
