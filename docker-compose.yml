@@ -4,13 +4,13 @@ services:
   backend:
     build: .
     ports:
-      - "3000:3000"
+      - "8085:8085"
     environment:
       - MONGODB_URI=mongodb://mongo:27017/lifepill
       - JWT_SECRET=${JWT_SECRET}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
-      - PORT=3000
+      - PORT=8085
     depends_on:
       - mongo
     networks:
