@@ -53,17 +53,29 @@ app.get('/lifepill', (req, res) => {
     res.send('Life Pill Route');
 });
 
-mongoose.connect(process.env.MONGO_URI)
-    .then(() => console.log("✅ Conectado a MongoDB Atlas"))
-    .catch(err => console.error("❌ Error conectando a MongoDB:", err));
+(async () => {
+  try {
+    console.log("🔗 Intentando conectar a MongoDB...");
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 10000, // evita esperas infinitas
+    });
+    console.log("✅ Conectado a MongoDB Atlas");
 
-app.use('/api/auth', authRoutes);
-app.use('/users', userRoutes);
-app.use('/profiles', userProfileRoutes);
-app.use('/meals', mealRoutes);
-app.use('/notifications', notificationRoutes);
+    // 🔥 Monta las rutas SOLO después de conectar
+    app.use('/api/auth', authRoutes);
+    app.use('/users', userRoutes);
+    app.use('/profiles', userProfileRoutes);
+    app.use('/meals', mealRoutes);
+    app.use('/notifications', notificationRoutes);
 
-app.listen(8085, () => {
-    console.log('🚀 Server is running on port 8085');
-    console.log('📄 Swagger docs en http://localhost:8085/api/docs');
-});
+    // 🚀 Arranca el servidor
+    app.listen(8085, () => {
+      console.log('🚀 Server is running on port 8085');
+      console.log('📄 Swagger docs en http://localhost:8085/api/docs');
+    });
+
+  } catch (err) {
+    console.error("❌ Error conectando a MongoDB:", err.message);
+  }
+})();
+
