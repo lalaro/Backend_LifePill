@@ -16,23 +16,30 @@ const swaggerJsdoc = require('swagger-jsdoc');
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:8085", "https://lifepill.duckdns.org", "*"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type", "Authorization"]
+}));
 app.use(bodyParser.json());
 
 // Configuración de Swagger
 const swaggerOptions = {
-    definition: {
-        openapi: "3.0.0",
-        info: {
-            title: "LifePill API",
-            version: "1.0.0",
-            description: "Documentación automática con Swagger para la API de LifePill",
-        },
-        servers: [
-            { url: "http://localhost:8085" }
-        ],
+  definition: {
+    openapi: "3.0.0",
+    info: {
+      title: "LifePill API",
+      version: "1.0.0",
+      description: "Documentación automática con Swagger para la API de LifePill",
     },
-    apis: ["./src/routes/*.js"], // Documentación desde tus rutas
+    servers: [
+      { url: process.env.NODE_ENV === "production" 
+          ? "https://lifepill.duckdns.org:8085" 
+          : "http://localhost:8085" 
+      }
+    ],
+  },
+  apis: ["./src/routes/*.js"],
 };
 
 const swaggerDocs = swaggerJsdoc(swaggerOptions);

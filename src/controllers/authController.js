@@ -49,18 +49,23 @@ exports.googleAuth = async (req, res) => {
 // === REGISTRO NORMAL ===
 exports.register = async (req, res) => {
   try {
+    console.log("📩 Datos recibidos en /register:", req.body); // 👈 LOG IMPORTANTE
+
     const { name, email, password } = req.body;
 
     if (!name || !email || !password) {
+      console.log("❌ Faltan campos");
       return res.status(400).json({ message: "Nombre, email y contraseña son requeridos" });
     }
 
     const existingUser = await userRepository.obtenerPorEmail(email);
     if (existingUser) {
+      console.log("⚠️ Usuario ya existe:", existingUser.email);
       return res.status(400).json({ message: "El usuario ya existe" });
     }
 
     const passwordHash = await bcrypt.hash(password, 10);
+    console.log("🔑 Hash generado:", passwordHash.substring(0, 10) + "...");
 
     const newUser = await userRepository.crear({
       name,
@@ -69,16 +74,21 @@ exports.register = async (req, res) => {
       provider: "local"
     });
 
+    console.log("✅ Usuario creado:", newUser);
+
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: process.env.JWT_EXPIRES_IN,
     });
 
+    console.log("🎟️ Token generado:", token.substring(0, 20) + "...");
+
     res.json({ message: "Registro exitoso", token, user: newUser });
   } catch (error) {
-    console.error("Error en register:", error);
+    console.error("💥 Error en register:", error);
     res.status(500).json({ message: "Error al registrar usuario", error: error.message });
   }
 };
+
 
 // === LOGIN NORMAL ===
 exports.login = async (req, res) => {
