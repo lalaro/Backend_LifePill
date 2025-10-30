@@ -1,10 +1,10 @@
-const userController = require("../src/controllers/userController");
-const userRepository = require("../src/repositories/userRepository");
-const UserProfile = require("../src/models/UserProfile");
+const userController = require("../../src/controllers/userController");
+const userRepository = require("../../src/repositories/userRepository");
+const UserProfile = require("../../src/models/UserProfile");
 const bcrypt = require("bcrypt");
 
 // 🧩 Mock de dependencias
-jest.mock("../src/repositories/userRepository", () => ({
+jest.mock("../../src/repositories/userRepository", () => ({
   listar: jest.fn(),
   obtenerPorId: jest.fn(),
   crear: jest.fn(),
@@ -13,7 +13,7 @@ jest.mock("../src/repositories/userRepository", () => ({
   startSession: jest.fn(),
 }));
 
-jest.mock("../src/models/UserProfile", () => {
+jest.mock("../../src/models/UserProfile", () => {
   return jest.fn().mockImplementation(() => ({
     save: jest.fn(),
     toObject: jest.fn().mockReturnValue({}),

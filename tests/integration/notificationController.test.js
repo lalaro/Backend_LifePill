@@ -1,7 +1,14 @@
-const notificationRepository = require("../src/repositories/notificationRepository");
-const notificationController = require("../src/controllers/notificationController");
+const notificationRepository = require("../../src/repositories/notificationRepository");
+const notificationController = require("../../src/controllers/notificationController");
 
-jest.mock("../src/repositories/notificationRepository");
+jest.mock("../../src/repositories/notificationRepository", () => ({
+  listar: jest.fn(),
+  listarPorUsuario: jest.fn(),
+  obtenerPorId: jest.fn(),
+  crear: jest.fn(),
+  actualizar: jest.fn(),
+  eliminar: jest.fn(),
+}));
 
 describe("notificationController", () => {
   let req, res;

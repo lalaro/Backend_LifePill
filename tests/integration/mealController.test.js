@@ -1,7 +1,7 @@
-const mealRepository = require("../src/repositories/mealRepository");
-const mealController = require("../src/controllers/mealController");
+const mealRepository = require("../../src/repositories/mealRepository");
+const mealController = require("../../src/controllers/mealController");
 
-jest.mock("../src/repositories/mealRepository");
+jest.mock("../../src/repositories/mealRepository");
 
 describe("mealController", () => {
   let req, res;

@@ -1,9 +1,9 @@
 // tests/authMiddleware.test.js
 
-const { authenticate } = require("../src/middlewares/authMiddleware");
-const { verifyJwt } = require("../src/utils/authToken");
+const { authenticate } = require("../../src/middlewares/authMiddleware");
+const { verifyJwt } = require("../../src/utils/authToken");
 
-jest.mock("../src/utils/authToken");
+jest.mock("../../src/utils/authToken");
 
 describe("authMiddleware.authenticate", () => {
   let req, res, next;

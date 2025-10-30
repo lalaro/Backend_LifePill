@@ -5,7 +5,14 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon app.js",
-    "test": "jest --detectOpenHandles --forceExit --coverage"
+
+    "test": "npm run test:unit && npm run test:integration && npm run test:load",
+
+    "test:unit": "jest --detectOpenHandles --forceExit --coverage --testPathPatterns=tests/unit",
+
+    "test:integration": "jest --detectOpenHandles --forceExit --coverage --testPathPatterns=tests/integration",
+
+    "test:load": "k6 run --env BASE_URL=http://localhost:8085 tests/load/user-endpoints.test.js"
   },
   "repository": {
     "type": "git",
@@ -46,7 +53,10 @@
     "collectCoverage": true,
     "coverageDirectory": "coverage",
     "coverageReporters": ["lcov", "text-summary"],
-    "testMatch": ["**/tests/**/*.test.js"],
+    "testMatch": [
+      "**/tests/unit/**/*.test.js",
+      "**/tests/integration/**/*.test.js"
+    ],
     "testEnvironment": "node"
   }
 }

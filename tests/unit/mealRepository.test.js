@@ -1,7 +1,7 @@
 
 const mongoose = require("mongoose");
 const { MongoMemoryServer } = require("mongodb-memory-server");
-const mealRepository = require("../src/repositories/mealRepository");
+const mealRepository = require("../../src/repositories/mealRepository");
 
 let mongoServer;
 

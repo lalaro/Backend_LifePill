@@ -14,11 +14,11 @@ jest.mock("google-auth-library", () => {
 
 jest.mock("jsonwebtoken");
 jest.mock("bcrypt");
-jest.mock("../src/repositories/userRepository");
+jest.mock("../../src/repositories/userRepository");
 
 // --- Imports ---
-const authController = require("../src/controllers/authController");
-const userRepository = require("../src/repositories/userRepository");
+const authController = require("../../src/controllers/authController");
+const userRepository = require("../../src/repositories/userRepository");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 

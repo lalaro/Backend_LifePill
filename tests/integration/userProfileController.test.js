@@ -1,8 +1,8 @@
-const userProfileController = require("../src/controllers/userProfileController");
-const userProfileRepository = require("../src/repositories/userProfileRepository");
+const userProfileController = require("../../src/controllers/userProfileController");
+const userProfileRepository = require("../../src/repositories/userProfileRepository");
 
 // 🧩 Mock del repositorio
-jest.mock("../src/repositories/userProfileRepository", () => ({
+jest.mock("../../src/repositories/userProfileRepository", () => ({
   listar: jest.fn(),
   obtenerPorId: jest.fn(),
   obtenerPorUsuario: jest.fn(),

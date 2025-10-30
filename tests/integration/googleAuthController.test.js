@@ -8,15 +8,15 @@ jest.mock("google-auth-library", () => {
   };
 });
 
-jest.mock("../src/repositories/userRepository");
-jest.mock("../src/repositories/userProfileRepository");
-jest.mock("../src/utils/authToken");
+jest.mock("../../src/repositories/userRepository");
+jest.mock("../../src/repositories/userProfileRepository");
+jest.mock("../../src/utils/authToken");
 
 const { OAuth2Client, __verifyIdTokenMock: verifyIdTokenMock } = require("google-auth-library");
-const userRepository = require("../src/repositories/userRepository");
-const userProfileRepository = require("../src/repositories/userProfileRepository");
-const { signJwt } = require("../src/utils/authToken");
-const googleAuthController = require("../src/controllers/googleAuthController");
+const userRepository = require("../../src/repositories/userRepository");
+const userProfileRepository = require("../../src/repositories/userProfileRepository");
+const { signJwt } = require("../../src/utils/authToken");
+const googleAuthController = require("../../src/controllers/googleAuthController");
 
 process.env.GOOGLE_CLIENT_ID = "test-client-id";
 
