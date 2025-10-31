@@ -57,18 +57,18 @@ app.get('/lifepill', (req, res) => {
   try {
     console.log("🔗 Intentando conectar a MongoDB...");
     await mongoose.connect(process.env.MONGO_URI, {
-      serverSelectionTimeoutMS: 10000, // evita esperas infinitas
+      serverSelectionTimeoutMS: 10000, 
     });
     console.log("✅ Conectado a MongoDB Atlas");
 
-    // 🔥 Monta las rutas SOLO después de conectar
+    
     app.use('/api/auth', authRoutes);
     app.use('/users', userRoutes);
     app.use('/profiles', userProfileRoutes);
     app.use('/meals', mealRoutes);
     app.use('/notifications', notificationRoutes);
 
-    // 🚀 Arranca el servidor
+    
     app.listen(8085, () => {
       console.log('🚀 Server is running on port 8085');
       console.log('📄 Swagger docs en http://localhost:8085/api/docs');
